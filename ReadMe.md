@@ -9,6 +9,10 @@ Think of them as **“cantrips”**: small, reusable bits of functionality that 
 
 ## ✨ Features
 
+### Static Functions
+
+Useful static function call from calss APGCantrip.
+
 - **App Info Helpers**
   - `APGCantrip.version` → package version
   - `appName()`, `appBundleID()`, `appVersionString()`, `aboutString()`
@@ -39,6 +43,18 @@ Think of them as **“cantrips”**: small, reusable bits of functionality that 
 - **System Info**
   - `systemUptime()`, `processorCount()`, `physicalMemoryMB()`
   - `currentUsername()`
+  
+### RGB Data
+
+APGCantripRGB is a new structure containing RGBA data, along with function to convert to common Color formats, as well as preset value.
+
+### CSS
+
+APGCantripCSS is a new class containing font information used by Attributed Strings to emulate HTML/CSS usage of Rich Texts.  gAPGCantripCSSDefault is the default global most often used to describe the appearance.
+
+### Rich Text (AttributedString)
+
+APGCantrip+AttributedString contains extension to AttributedString to help the creation of Rich Text content in the style of HTML/CSS.  New function have been added to the AttributedString type to easily add paragraphs, banners and links to an Attributed String.
 
 ---
 

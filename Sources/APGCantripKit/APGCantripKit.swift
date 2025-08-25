@@ -24,7 +24,7 @@ public struct APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.1.0"
+    public static let version = "0.2.0"
 
     // MARK: - Cross-Platform (or mostly)
 
@@ -280,7 +280,7 @@ public struct APGCantrip {
         NSScreen.screens.map { $0.frame.size }
     }
 
-    /// Get current mouse location in global screen coordinates.
+    /// Get current mouse location in screen coordinates.
     public static func mouseLocation() -> CGPoint {
         NSEvent.mouseLocation
     }
