@@ -48,6 +48,8 @@ public final class APGCantripCSS: @unchecked Sendable, ObservableObject {
     public var h4: APGCantripFont
     public var h5: APGCantripFont
     
+    public var verticalSpace: Bool
+    
     // MARK: - Init
     
     public init(text: APGCantripFont = APGCantripFont.systemFont(ofSize: 12),
@@ -55,13 +57,15 @@ public final class APGCantripCSS: @unchecked Sendable, ObservableObject {
                 h2: APGCantripFont = APGCantripFont.boldSystemFont(ofSize: 24),
                 h3: APGCantripFont = APGCantripFont.boldSystemFont(ofSize: 20),
                 h4: APGCantripFont = APGCantripFont.boldSystemFont(ofSize: 18),
-                h5: APGCantripFont = APGCantripFont.systemFont(ofSize: 16) ) {
+                h5: APGCantripFont = APGCantripFont.systemFont(ofSize: 16),
+                verticalSpace: Bool = true) {
         self.text = text
         self.h1 = h1
         self.h2 = h2
         self.h3 = h3
         self.h4 = h4
         self.h5 = h5
+        self.verticalSpace = verticalSpace
     }
 
 }

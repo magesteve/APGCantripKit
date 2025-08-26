@@ -21,6 +21,18 @@ import UIKit
 import SwiftUI
 #endif
 
+// MARK: - Typealias
+
+#if canImport(AppKit)
+
+public typealias APGCantripImage = NSImage
+
+#elseif canImport(UIKit)
+
+public typealias APGCantripImage = UIImage
+
+#endif
+
 // MARK: - Constants & Globals
 
 /// Default clickable link color used by APGCantrip helpers.

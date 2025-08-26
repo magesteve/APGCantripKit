@@ -24,7 +24,7 @@ public struct APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.2.0"
+    public static let version = "0.2.1"
 
     // MARK: - Cross-Platform (or mostly)
 
@@ -37,9 +37,18 @@ public struct APGCantrip {
 
     /// Return application version string, e.g. "v1.2 (45)".
     public static func appVersionString() -> String {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
-        return "v\(version) (\(build))"
+        let versionKey = "CFBundleShortVersionString"
+        let buildKey = kCFBundleVersionKey as String
+
+        let version = (Bundle.main.object(forInfoDictionaryKey: versionKey) as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let build = (Bundle.main.object(forInfoDictionaryKey: buildKey) as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let safeVersion = (version?.isEmpty == false) ? version! : "1.0"
+        let safeBuild   = (build?.isEmpty == false) ? build!   : ""
+
+        return "v\(safeVersion)" + (safeBuild.isEmpty ? "" : " (\(safeBuild))")
     }
 
     /// Return copyright string from Info.plist (NSHumanReadableCopyright), or empty.
@@ -288,6 +297,17 @@ public struct APGCantrip {
     /// Get current modifier flags (Command, Option, Shift, etc.).
     public static func currentModifierFlags() -> NSEvent.ModifierFlags {
         NSEvent.modifierFlags
+    }
+
+    /// Internal: load a platform image from assets by name.
+    public static func cantripLoadImage(named name: String) -> APGCantripImage? {
+#if canImport(AppKit)
+        return NSImage(named: NSImage.Name(name))
+#elseif canImport(UIKit)
+        return UIImage(named: name)
+#else
+        return nil
+#endif
     }
 
     // MARK: System / Power
