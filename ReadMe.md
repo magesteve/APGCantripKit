@@ -3,7 +3,7 @@
 A lightweight Swift library of **properties, typealiases, and common functions** that are useful across Apple platform development.
 Think of them as **“cantrips”**: small, reusable bits of functionality that you’ll find yourself using again and again.
 
-Repository https://github.com/magesteve/APGCantripKit with current version **0.2.1**
+Repository https://github.com/magesteve/APGCantripKit with current version **0.5.0**
 
 ---
 
@@ -27,7 +27,7 @@ Useful static function call from calss APGCantrip.
   - `isURL(_:)`, `openURLRef(_:)`, `openRef(_:)`
   - `hostname()`, `isOnline()`
 
-- **macOS UI Utilities** *(guarded with `#if os(macOS)`)*
+- **macOS UI Utilities** *(guarded with `#if canImport(AppKit)`)*
   - Clipboard: `copyToClipboard(_:)`, `pasteFromClipboard()`
   - Alerts: `showMessage(_:)`, `showBlockingMessage(_:)`
   - Finder: `revealInFinder(_:)`
@@ -95,7 +95,7 @@ if APGCantrip.isURL("https://apple.com") {
     APGCantrip.openRef("https://apple.com")
 }
 
-#if os(macOS)
+#if canImport(AppKit)
 APGCantrip.showMessage("Hello, world!")
 #endif
 ```

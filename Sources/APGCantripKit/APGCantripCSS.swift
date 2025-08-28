@@ -9,6 +9,8 @@
 
 // MARK: - Import
 
+import Foundation
+
 #if canImport(AppKit)
 
 import AppKit

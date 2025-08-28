@@ -151,11 +151,11 @@ public extension AttributedString {
     /// Internal: create a block of attributed text (with font) that ends in a newline.
     static func _cantripMakeBlock(_ text: String, font: APGCantripFont, verticalSpace: Bool) -> AttributedString {
         var s = _cantripMakeInline(text, font: font)
-        if s.characters.last != "\n" {
-            s.append(AttributedString("\n"))
+        if s.characters.last != APGCantrip.lineFeedChar {
+            s.append(AttributedString(APGCantrip.lineFeed))
         }
         if verticalSpace {
-            s.append(AttributedString("\n"))
+            s.append(AttributedString(APGCantrip.lineFeed))
         }
         return s
     }
@@ -172,7 +172,7 @@ public extension AttributedString {
                             color: APGCantripRGB? = nil) -> AttributedString {
         let attachment = NSTextAttachment()
 
-        #if canImport(AppKit)
+#if canImport(AppKit)
         let lineSize = CGSize(width: width, height: thickness)
         let lineImage = NSImage(size: lineSize, flipped: false) { rect in
             (color?.nsColor ?? .separatorColor).setFill()
@@ -190,7 +190,7 @@ public extension AttributedString {
         UIGraphicsEndImageContext()
         attachment.image = lineImage
         attachment.bounds = CGRect(origin: .zero, size: lineSize)
-        #endif
+#endif
 
         return AttributedString(NSAttributedString(attachment: attachment))
     }
@@ -220,14 +220,14 @@ public extension AttributedString {
         if let size {
             attachment.bounds = CGRect(origin: .zero, size: size)
         } else {
-            #if canImport(AppKit)
+#if canImport(AppKit)
             if let rep = image.bestRepresentation(for: .zero, context: nil, hints: nil) {
                 attachment.bounds = CGRect(origin: .zero,
                                            size: CGSize(width: rep.pixelsWide, height: rep.pixelsHigh))
             }
-            #elseif canImport(UIKit)
+#elseif canImport(UIKit)
             attachment.bounds = CGRect(origin: .zero, size: image.size)
-            #endif
+#endif
         }
 
         let ns = NSMutableAttributedString(attachment: attachment)
@@ -269,11 +269,11 @@ public extension AttributedString {
 
     /// Append a newline to end the current paragraph.
     mutating func cantripParagraphEnd() {
-        self.append(AttributedString("\n"))
+        self.append(AttributedString(APGCantrip.lineFeed))
     }
     
     /// Build a single newline as an attributed string.
     static func cantripParagraphEnd() -> AttributedString {
-        AttributedString("\n")
+        AttributedString(APGCantrip.lineFeed)
     }
 }

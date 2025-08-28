@@ -8,14 +8,24 @@
 import Foundation
 
 #if canImport(SystemConfiguration)
+
 import SystemConfiguration
+
 #endif
 
-#if os(macOS)
+#if canImport(AppKit)
+
 import AppKit
 import IOKit.pwr_mgt          // preventSleep / allowSleep
 import ApplicationServices     // AXIsProcessTrustedWithOptions
 import UserNotifications       // Modern notifications
+
+#endif
+
+#if canImport(UIKit)
+
+import UIKit
+
 #endif
 
 /// Abstract Namespace for Package Information & Reusable Cantrips
@@ -24,7 +34,18 @@ public struct APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.2.1"
+    public static let version = "0.5.0"
+    
+    // MARK: Constants
+    
+    /// Line Feed
+    public static let lineFeed = "\n"
+
+    /// Has
+    public static let hash = "#"
+
+    /// Line Feed Char
+    public static let lineFeedChar: Character = "\n"
 
     // MARK: - Cross-Platform (or mostly)
 
@@ -81,6 +102,26 @@ public struct APGCantrip {
         return nil
     }
 
+    /// Internal: load a platform image from assets by name.
+    public static func cantripLoadImage(named name: String) -> APGCantripImage? {
+        
+#if canImport(AppKit)
+        
+        return NSImage(named: NSImage.Name(name))
+
+#elseif canImport(UIKit)
+
+        return UIImage(named: name)
+
+#else
+
+        return nil
+
+#endif
+        
+    }
+
+
     /// User’s Documents directory.
     public static func documentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -123,22 +164,28 @@ public struct APGCantrip {
 
     /// Simple online check via SystemConfiguration reachability.
     public static func isOnline() -> Bool {
-        #if canImport(SystemConfiguration)
+        
+#if canImport(SystemConfiguration)
+        
         guard let reach = SCNetworkReachabilityCreateWithName(nil, "apple.com") else { return false }
         var flags = SCNetworkReachabilityFlags()
         guard SCNetworkReachabilityGetFlags(reach, &flags) else { return false }
         let reachable = flags.contains(.reachable)
         let requiresConn = flags.contains(.connectionRequired)
         return reachable && !requiresConn
-        #else
+        
+#else
+        
         // Fallback: assume online unknown
         return true
-        #endif
+        
+#endif
+        
     }
 
-    // MARK: - macOS Only
+    // MARK: - Appkit Only
 
-    #if os(macOS)
+#if canImport(AppKit)
 
     // MARK: Checkers
 
@@ -299,17 +346,6 @@ public struct APGCantrip {
         NSEvent.modifierFlags
     }
 
-    /// Internal: load a platform image from assets by name.
-    public static func cantripLoadImage(named name: String) -> APGCantripImage? {
-#if canImport(AppKit)
-        return NSImage(named: NSImage.Name(name))
-#elseif canImport(UIKit)
-        return UIImage(named: name)
-#else
-        return nil
-#endif
-    }
-
     // MARK: System / Power
 
     /// Prevent the system display from sleeping (returns assertion ID when successful).
@@ -386,5 +422,5 @@ public struct APGCantrip {
         }
     }
 
-    #endif // os(macOS)
+#endif
 }

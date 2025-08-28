@@ -10,15 +10,21 @@
 // MARK: - Imports
 
 #if canImport(AppKit)
+
 import AppKit
+
 #endif
 
 #if canImport(UIKit)
+
 import UIKit
+
 #endif
 
 #if canImport(SwiftUI)
+
 import SwiftUI
+
 #endif
 
 // MARK: - Typealias
@@ -38,13 +44,21 @@ public typealias APGCantripImage = UIImage
 /// Default clickable link color used by APGCantrip helpers.
 /// Chooses the platform-native link color when available, falling back to `.linkDefault` blue.
 public let gCantripLinkRGB: APGCantripRGB = {
-    #if canImport(AppKit)
+    
+#if canImport(AppKit)
+    
     return APGCantripRGB(nsColor: .linkColor)
-    #elseif canImport(UIKit)
+    
+#elseif canImport(UIKit)
+    
     return APGCantripRGB(uiColor: .link)
-    #else
+    
+#else
+    
     return .linkDefault
-    #endif
+    
+#endif
+    
 }()
 
 /// Optional app-accent color to be shared across packages (`nil` by default).
@@ -92,8 +106,9 @@ public extension Int {
 // MARK: - Platform Bridges
 
 public extension APGCantripRGB {
-
-    #if canImport(SwiftUI)
+    
+#if canImport(SwiftUI)
+    
     /// Bridge to `SwiftUI.Color` in the sRGB color space.
     var swiftUIColor: Color {
         Color(.sRGB,
@@ -102,9 +117,11 @@ public extension APGCantripRGB {
               blue: Double(blue) / 255.0,
               opacity: Double(alpha) / 255.0)
     }
-    #endif
-
-    #if canImport(AppKit)
+    
+#endif
+    
+#if canImport(AppKit)
+    
     /// Bridge to `NSColor` in the sRGB color space.
     var nsColor: NSColor {
         NSColor(srgbRed: CGFloat(Double(red) / 255.0),
@@ -112,7 +129,7 @@ public extension APGCantripRGB {
                 blue: CGFloat(Double(blue) / 255.0),
                 alpha: CGFloat(Double(alpha) / 255.0))
     }
-
+    
     /// Initialize from an `NSColor` (converted to sRGB), clamped to 0–255.
     init(nsColor: NSColor) {
         let c = nsColor.usingColorSpace(.sRGB) ?? nsColor
@@ -123,9 +140,10 @@ public extension APGCantripRGB {
                   blue: Int((b * 255).rounded()),
                   alpha: Int((a * 255).rounded()))
     }
-    #endif
-
-    #if canImport(UIKit)
+#endif
+    
+#if canImport(UIKit)
+    
     /// Bridge to `UIColor` in the sRGB color space.
     var uiColor: UIColor {
         UIColor(red: CGFloat(Double(red) / 255.0),
@@ -133,7 +151,7 @@ public extension APGCantripRGB {
                 blue: CGFloat(Double(blue) / 255.0),
                 alpha: CGFloat(Double(alpha) / 255.0))
     }
-
+    
     /// Initialize from a `UIColor` (converted to sRGB), clamped to 0–255.
     init(uiColor: UIColor) {
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
@@ -143,7 +161,9 @@ public extension APGCantripRGB {
                   blue: Int((b * 255).rounded()),
                   alpha: Int((a * 255).rounded()))
     }
-    #endif
+    
+#endif
+    
 }
 
 // MARK: - Presets
@@ -256,7 +276,7 @@ public extension APGCantripRGB {
     /// Alpha is optional; defaults to 255 (opaque).
     init?(hex: String) {
         let s = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-                    .replacingOccurrences(of: "#", with: "")
+            .replacingOccurrences(of: APGCantrip.hash, with: String())
                     .lowercased()
 
         func hex2(_ i: Int) -> Int {

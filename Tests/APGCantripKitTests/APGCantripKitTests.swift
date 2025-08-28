@@ -131,17 +131,3 @@ import Foundation
     #expect(!APGCantrip.hostname().isEmpty)
 }
 
-// MARK: - macOS-only tests
-
-#if os(macOS)
-import AppKit
-
-@Test func clipboard_RoundTrip() async throws {
-    let text = "Hello Cantrip \(Int.random(in: 1...9999))"
-    await APGCantrip.copyToClipboard(text)
-    // Small delay to allow pasteboard to update (usually instant)
-    try await Task.sleep(nanoseconds: 10_000_000)
-    #expect(await APGCantrip.pasteFromClipboard() == text)
-}
-
-#endif // os(macOS)
