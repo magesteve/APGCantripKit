@@ -58,7 +58,7 @@ APGCantrip+AttributedString contains extension to AttributedString to help the c
 
 ---
 
-## 📦 Installation
+## Installation
 
 Add **APGCantripKit** as a Swift Package dependency in Xcode:
 
@@ -76,7 +76,7 @@ dependencies: [
 
 ---
 
-## 🚀 Usage
+## Usage
 
 Import the module:
 
@@ -102,7 +102,7 @@ APGCantrip.showMessage("Hello, world!")
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Unit tests are written using **Swift Testing** (`import Testing`).
 
@@ -114,7 +114,13 @@ swift test
 
 ---
 
-## 📄 License
+### Sample Code
 
-MIT License.
-Created by **Steve Sheets**, 2025.
+The APGExample can be found at [Repository](https://github.com/magesteve/APGExample).
+
+---
+
+## License
+
+[MIT License](LICENSE)
+Created by **Steve Sheets**, 2025
