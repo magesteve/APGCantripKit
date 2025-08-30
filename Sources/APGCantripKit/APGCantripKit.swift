@@ -29,12 +29,12 @@ import UIKit
 #endif
 
 /// Abstract Namespace for Package Information & Reusable Cantrips
-public struct APGCantrip {
+public class APGCantrip {
 
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.5.0"
+    public static let version = "0.5.1"
     
     // MARK: Constants
     

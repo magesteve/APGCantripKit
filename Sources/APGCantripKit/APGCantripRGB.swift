@@ -3,29 +3,25 @@
 //
 //  Created by Steve Sheets on 8/25/25.
 //
-//  Cross-platform bridges (SwiftUI.Color / NSColor / UIColor), presets, hex parsing,
-//  and package-wide globals for app/link colors.
+//  Cross-platform bridges (SwiftUI.Color / NSColor / UIColor),
+//  presets, hex parsing, and package-wide globals for app/link colors.
 //
 
 // MARK: - Imports
+
+import Foundation
+import SwiftUI
 
 #if canImport(AppKit)
 
 import AppKit
 
-#endif
-
-#if canImport(UIKit)
+#elseif canImport(UIKit)
 
 import UIKit
 
 #endif
 
-#if canImport(SwiftUI)
-
-import SwiftUI
-
-#endif
 
 // MARK: - Typealias
 
@@ -52,11 +48,7 @@ public let gCantripLinkRGB: APGCantripRGB = {
 #elseif canImport(UIKit)
     
     return APGCantripRGB(uiColor: .link)
-    
-#else
-    
-    return .linkDefault
-    
+        
 #endif
     
 }()
@@ -106,9 +98,7 @@ public extension Int {
 // MARK: - Platform Bridges
 
 public extension APGCantripRGB {
-    
-#if canImport(SwiftUI)
-    
+        
     /// Bridge to `SwiftUI.Color` in the sRGB color space.
     var swiftUIColor: Color {
         Color(.sRGB,
@@ -118,7 +108,32 @@ public extension APGCantripRGB {
               opacity: Double(alpha) / 255.0)
     }
     
+    /// Initialize from a SwiftUI `Color` (converted to sRGB), clamped to 0–255.
+    init(color: Color) {
+        
+#if canImport(AppKit)
+        
+        let nsColor = NSColor(color)
+        let c = nsColor.usingColorSpace(.sRGB) ?? nsColor
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        c.getRed(&r, green: &g, blue: &b, alpha: &a)
+
+#elseif canImport(UIKit)
+
+        let uiColor = UIColor(color)
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+
 #endif
+
+        self.init(
+            red: Int((r * 255).rounded()),
+            green: Int((g * 255).rounded()),
+            blue: Int((b * 255).rounded()),
+            alpha: Int((a * 255).rounded())
+        )
+    }
+
     
 #if canImport(AppKit)
     
@@ -140,6 +155,7 @@ public extension APGCantripRGB {
                   blue: Int((b * 255).rounded()),
                   alpha: Int((a * 255).rounded()))
     }
+    
 #endif
     
 #if canImport(UIKit)

@@ -4,7 +4,7 @@
 //
 //  Created by Steve Sheets on 8/25/25.
 //
-//  Simple CSS-like font style holder for Cantrip (SwiftUI-first).
+//  Simple CSS-like font style holder for Cantrip.
 //  Provides a global default stylesheet, main-actor isolated for safety.
 
 // MARK: - Import
