@@ -100,17 +100,15 @@ public extension AttributedString {
     
     // MARK: - Link (clickable text)
     
-    /// Append a clickable text run with normal `text` font and a link color.
-    mutating func cantripLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) {
-        self += Self.cantripLink(text, ref, css: css, linkRGB: linkRGB)
-    }
-    
     /// Build a clickable text run with normal `text` font and a link color.
     /// Adds underline style and attaches `.link` attribute if `ref` parses as a URL.
     static func cantripLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) -> AttributedString {
         var s = _cantripMakeInline(text, font: (css ?? .standard).text)
         
-        let aRGB = linkRGB ?? gCantripLinkRGB
+        var aRGB = linkRGB ?? gCantripLinkRGB
+        if ref.isEmpty {
+            aRGB = gCantripAppRGB ?? .black
+        }
         
 #if canImport(AppKit)
         s.appKit.foregroundColor = aRGB.nsColor
@@ -120,12 +118,92 @@ public extension AttributedString {
         
         s.underlineStyle = .single
         
-        if let url = URL(string: ref) {
+        if !ref.isEmpty, let url = URL(string: ref) {
             s.link = url
         }
         return s
     }
     
+    /// Append a clickable text run with normal `text` font and a link color.
+    mutating func cantripLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) {
+        self += Self.cantripLink(text, ref, css: css, linkRGB: linkRGB)
+    }
+    
+    static func cantripBannerLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) -> AttributedString {
+        let result = Self.cantripLink(text, ref, css: css, linkRGB: linkRGB)
+        return cantripCentered(result)
+    }
+    
+    mutating func cantripBannerLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) {
+        self += Self.cantripBannerLink(text, ref, css: css, linkRGB: linkRGB)
+    }
+
+    
+    // MARK: - Centered
+
+    /// Build a centered line of text using the CSS `text` font.
+    /// - Parameters:
+    ///   - text: The text to center.
+    ///   - css: Optional CSS configuration.
+    /// - Returns: A centered paragraph as an `AttributedString`.
+    static func cantripCentered(_ text: String, css: APGCantripCSS? = nil) -> AttributedString {
+        
+#if canImport(AppKit) || canImport(UIKit)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: (css ?? .standard).text,
+            .paragraphStyle: paragraphStyle
+        ]
+        let ns = NSMutableAttributedString(string: text, attributes: attributes)
+
+        // Append newline(s) for paragraph break
+        ns.append(NSAttributedString(string: "\n\n"))
+
+        return AttributedString(ns)
+        
+#else
+        
+        return AttributedString(text + "\n\n")
+        
+#endif
+        
+    }
+    
+    /// Append inline text using the CSS `text` font (no paragraph break).
+    mutating func cantripCentered(_ text: String, css: APGCantripCSS? = nil) {
+        self += Self.cantripCentered(text, css: css)
+    }
+
+        /// Return a new AttributedString with centered paragraph alignment.
+    /// - Parameter input: The existing AttributedString to center.
+    /// - Returns: A copy of the input with centered paragraph style applied.
+    static func cantripCentered(_ input: AttributedString) -> AttributedString {
+        
+#if canImport(AppKit) || canImport(UIKit)
+        let ns = NSMutableAttributedString(input)
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        ns.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: ns.length))
+
+        return AttributedString(ns)
+        
+#else
+        
+        return input
+        
+#endif
+    }
+
+    /// Append inline text using the CSS `text` font (no paragraph break).
+    mutating func cantripCentered(_ input: AttributedString) {
+        self += Self.cantripCentered(input)
+    }
+
     // MARK: - Internal factories
     
     /// Internal: create an inline attributed run with a specific font.
@@ -134,13 +212,13 @@ public extension AttributedString {
 #if canImport(AppKit)
         let ns = NSMutableAttributedString(
             string: text,
-            attributes: [.font: font]  // apply NSFont
+            attributes: [.font: font]
         )
         return AttributedString(ns)
 #elseif canImport(UIKit)
         let ns = NSMutableAttributedString(
             string: text,
-            attributes: [.font: font]  // apply UIFont
+            attributes: [.font: font]
         )
         return AttributedString(ns)
 #else

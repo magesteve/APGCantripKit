@@ -3,7 +3,7 @@
 A lightweight Swift library of **properties, typealiases, and common functions** that are useful across Apple platform development.
 Think of them as **“cantrips”**: small, reusable bits of functionality that you’ll find yourself using again and again.
 
-Repository https://github.com/magesteve/APGCantripKit with current version **0.5.1**
+Repository https://github.com/magesteve/APGCantripKit with current version **0.5.2**
 
 ---
 

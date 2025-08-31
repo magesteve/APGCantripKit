@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import AVFoundation
+import UserNotifications
 
 #if canImport(SystemConfiguration)
 
@@ -16,9 +18,7 @@ import SystemConfiguration
 #if canImport(AppKit)
 
 import AppKit
-import IOKit.pwr_mgt          // preventSleep / allowSleep
-import ApplicationServices     // AXIsProcessTrustedWithOptions
-import UserNotifications       // Modern notifications
+import IOKit.pwr_mgt          
 
 #endif
 
@@ -34,7 +34,7 @@ public class APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.5.1"
+    public static let version = "0.5.2"
     
     // MARK: Constants
     
@@ -181,6 +181,24 @@ public class APGCantrip {
         
 #endif
         
+    }
+
+    // MARK: Notifications (modern UNUserNotificationCenter)
+
+    /// Deliver a simple user notification (modern API).
+    @MainActor
+    public static func deliverNotification(title: String, body: String) {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
+            guard granted else { return }
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            let request = UNNotificationRequest(identifier: UUID().uuidString,
+                                                content: content,
+                                                trigger: nil)
+            center.add(request, withCompletionHandler: nil)
+        }
     }
 
     // MARK: - Appkit Only
@@ -373,10 +391,13 @@ public class APGCantrip {
 
     /// Speak the given text aloud using system speech.
     public static func speak(_ text: String) {
-        let synth = NSSpeechSynthesizer()
-        synth.startSpeaking(text)
-    }
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
 
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.speak(utterance)
+    }
+    
     /// Simple “beep” using a built-in alert sound.
     public static func beep() {
         if NSSound(named: NSSound.Name("Funk"))?.play() != true {
@@ -389,24 +410,6 @@ public class APGCantrip {
     /// True if running in App Sandbox.
     public static func isSandboxed() -> Bool {
         ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
-    }
-
-    // MARK: Notifications (modern UNUserNotificationCenter)
-
-    /// Deliver a simple user notification (modern API).
-    @MainActor
-    public static func deliverNotification(title: String, body: String) {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            guard granted else { return }
-            let content = UNMutableNotificationContent()
-            content.title = title
-            content.body = body
-            let request = UNNotificationRequest(identifier: UUID().uuidString,
-                                                content: content,
-                                                trigger: nil)
-            center.add(request, withCompletionHandler: nil)
-        }
     }
 
     // MARK: AppleScript
