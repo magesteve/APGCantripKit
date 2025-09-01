@@ -34,7 +34,7 @@ public class APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.5.2"
+    public static let version = "0.5.3"
     
     // MARK: Constants
     
@@ -296,6 +296,16 @@ public class APGCantrip {
     public static func copyToClipboard(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
+    }
+
+    /// Copy Attributed text to clipboard.
+    @MainActor
+    public func copyAttributedStringToClipboard(_ attrStr: AttributedString) {
+        let nsAttrStr = NSAttributedString(attrStr)
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.writeObjects([nsAttrStr])
     }
 
     /// Paste text from clipboard.

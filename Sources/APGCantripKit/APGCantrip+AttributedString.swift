@@ -130,10 +130,28 @@ public extension AttributedString {
     }
     
     static func cantripBannerLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) -> AttributedString {
-        let result = Self.cantripLink(text, ref, css: css, linkRGB: linkRGB)
-        return cantripCentered(result)
+        var s = _cantripMakeInline(text, font: (css ?? .standard).h3)
+        
+        var aRGB = linkRGB ?? gCantripLinkRGB
+        if ref.isEmpty {
+            aRGB = gCantripAppRGB ?? .black
+        }
+        
+#if canImport(AppKit)
+        s.appKit.foregroundColor = aRGB.nsColor
+#elseif canImport(UIKit)
+        s.uiKit.foregroundColor = aRGB.uiColor
+#endif
+        
+        s.underlineStyle = .single
+        
+        if !ref.isEmpty, let url = URL(string: ref) {
+            s.link = url
+        }
+
+        return cantripCentered(s)
     }
-    
+
     mutating func cantripBannerLink(_ text: String, _ ref: String, css: APGCantripCSS? = nil, linkRGB: APGCantripRGB? = nil) {
         self += Self.cantripBannerLink(text, ref, css: css, linkRGB: linkRGB)
     }
@@ -160,13 +178,13 @@ public extension AttributedString {
         let ns = NSMutableAttributedString(string: text, attributes: attributes)
 
         // Append newline(s) for paragraph break
-        ns.append(NSAttributedString(string: "\n\n"))
+        ns.append(NSAttributedString(string: APGCantrip.lineFeed+APGCantrip.lineFeed))
 
         return AttributedString(ns)
         
 #else
         
-        return AttributedString(text + "\n\n")
+        return AttributedString(text + APGCantrip.lineFeed+APGCantrip.lineFeed)
         
 #endif
         

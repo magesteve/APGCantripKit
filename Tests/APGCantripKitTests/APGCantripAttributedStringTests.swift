@@ -63,14 +63,14 @@ final class APGCantripAttributedStringTests: XCTestCase {
         XCTAssertEqual(link2.link, URL(string: sampleURL))
     }
 
-//    @MainActor func testBannerLink() {
-//        var attr = AttributedString()
-//        attr.cantripBannerLink(sampleText, sampleURL)
-//        XCTAssertFalse(attr.characters.isEmpty)
-//
-//        let banner = AttributedString.cantripBannerLink(sampleText, sampleURL)
-//        XCTAssertFalse(banner.characters.isEmpty)
-//    }
+    @MainActor func testBannerLink() {
+        var attr = AttributedString()
+        attr.cantripBannerLink(sampleText, sampleURL)
+        XCTAssertFalse(attr.characters.isEmpty)
+
+        let banner = AttributedString.cantripBannerLink(sampleText, sampleURL)
+        XCTAssertFalse(banner.characters.isEmpty)
+    }
 
     @MainActor func testLineGeneration() {
         var attr = AttributedString()
