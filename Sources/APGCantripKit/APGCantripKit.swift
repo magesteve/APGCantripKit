@@ -34,7 +34,7 @@ public class APGCantrip {
     // MARK: - Package Info
 
     /// Version information of package
-    public static let version = "0.5.3"
+    public static let version = "0.6.0"
     
     // MARK: Constants
     
